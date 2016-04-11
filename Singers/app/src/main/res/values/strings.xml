@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Singers</string>
+    <string name="search_hint">Enter the name here...</string>
+    <string name="action_settings">Settings</string>
+    <color name="white">#FFFFFF</color>
+    <string name="title_activity_home">HomeActivity</string>
+</resources>

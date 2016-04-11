@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants">
+    <TableRow>
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+        />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="4">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/singer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:textSize="17dp"
+                    android:gravity="bottom"
+                    android:textColor="#000000"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_weight="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:gravity="top"
+                    android:textColor="#808080"
+                    android:id="@+id/styles" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/albums"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textStyle="italic"
+                    android:paddingLeft="10dp"
+                    />
+            </TableRow>
+
+        </TableLayout>
+
+    </TableRow>
+</TableLayout>
