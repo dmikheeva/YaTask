@@ -9,6 +9,17 @@ import java.util.Map;
  * Исполнитель
  */
 public class Singer implements Serializable {
+    private Long id;
+    private String name;
+    private List<String> genres;
+    private int tracks = 0;
+    private int albums = 0;
+    private String link;
+    private String description;
+    private Map<coverTypes, String> covers;
+
+    public enum coverTypes {small, big}
+
     public Singer(Long id, String name, List<String> genres, int tracks, int albums, String link, String description, Map<coverTypes, String> covers) {
         this.id = id;
         this.name = name;
@@ -22,22 +33,6 @@ public class Singer implements Serializable {
 
     public Singer(Long id) {
         this.id = id;
-    }
-
-    public enum coverTypes {small, big}
-
-    private Long id;
-    private String name;
-    private List<String> genres;
-    private int tracks = 0;
-    private int albums = 0;
-    private String link;
-    private String description;
-    private Map<coverTypes, String> covers;
-
-    @Override
-    public String toString() {
-        return name.toString();
     }
 
     public void setName(String name) {
@@ -100,8 +95,12 @@ public class Singer implements Serializable {
         return covers;
     }
 
+    /**
+     * Функция возвращает сконкатенированный через запятую список жанров
+     * @return String
+     */
     public String genresToString() {
-        if (genres.size() == 0) return "";
+        if (genres == null || genres.size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         sb.append(genres.get(0));
         for (int i = 1; i < genres.size(); i++) {
@@ -110,16 +109,22 @@ public class Singer implements Serializable {
         return sb.toString();
     }
 
+    @Override
+    public String toString() {
+        return name.toString();
+    }
+
     /**
      * Функция возвращает окончание для множественного числа слова на основании числа и массива окончаний
      *
-     * @param number       Integer Число на основе которого нужно сформировать окончание
-     * @param endingArray  Array Массив слов или окончаний для чисел (1, 4, 5),
-     *                     например array('яблоко', 'яблока', 'яблок')
+     * @param number      int Число на основе которого нужно сформировать окончание
+     * @param endingArray Array Массив слов или окончаний для чисел (1, 4, 5),
+     *                    например array('песня', 'песни', 'песен')
      * @return String
      */
     public String getEnding(int number, String[] endingArray) {
-        if (endingArray.length != 3) throw new ArrayIndexOutOfBoundsException("Out of boinds exception. Array must contains 3 elements!");
+        if (endingArray.length != 3)
+            throw new ArrayIndexOutOfBoundsException("Out of bounds exception. Array must contains 3 elements!");
         number = number % 100;
         String ending = "";
         if (number >= 11 && number <= 19) {

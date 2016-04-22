@@ -1,6 +1,5 @@
 package ru.daria.singers;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,14 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemAdapter extends BaseAdapter implements Filterable {
-    private Activity context;
     private final ImageLoader imageLoader;
-    LayoutInflater lInflator;
-    private final List<Singer> singers;
+    private LayoutInflater lInflater;
+    private List<Singer> singers;
+    private List<Singer> filteredSingers;
     private View.OnClickListener callback;
 
     //настройка кэширования изображений
-    DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true).build();
+    private static DisplayImageOptions options = new DisplayImageOptions.Builder().
+            cacheInMemory(true).cacheOnDisk(true).build();
 
     static class ViewHolder {
         public ImageView imageView;
@@ -40,47 +40,45 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
                            ImageLoader imageLoader,
                            View.OnClickListener callback
     ) {
-        this.context = context;
         this.singers = singers;
+        this.filteredSingers = singers;
         this.imageLoader = imageLoader;
-        lInflator = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.callback = callback;
     }
 
     @Override
     public int getCount() {
-        return singers.size();
+        return filteredSingers.size();
     }
 
-    // элемент по позиции
     @Override
     public Object getItem(int position) {
-        return singers.get(position);
+        return filteredSingers.get(position);
     }
 
-    //певец по позиции
-    public Singer getSinger(int position) {
-        return ((Singer) singers.get(position));
-    }
-
-    // id по позиции
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    /**
+     * исполнитель по позиции
+     */
+    public Singer getSinger(int position) {
+        return filteredSingers.get(position);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        //используем созданные ранее View, но не используемые
+        ViewHolder holder;
         View view = convertView;
+        //используем созданные ранее View, но уже не используемые
         if (view == null) {
-            view = lInflator.inflate(R.layout.list_single, parent, false);
+            view = lInflater.inflate(R.layout.list_single, parent, false);
             holder = new ViewHolder();
-            //Typeface myFont = Typeface.createFromAsset(view.getContext().getAssets(), "fonts/journal.ttf");
             holder.imageView = (ImageView) view.findViewById(R.id.image);
             holder.name = (TextView) view.findViewById(R.id.singer);
-            //holder.name.setTypeface(myFont);
             holder.styles = (TextView) view.findViewById(R.id.styles);
             holder.description = (TextView) view.findViewById(R.id.albums);
             view.setClickable(true);
@@ -90,8 +88,12 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
             holder = (ViewHolder) view.getTag();
         }
         Singer singer = getSinger(position);
-        //и заполняем их
-        imageLoader.displayImage(singer.getCovers().get(Singer.coverTypes.small), holder.imageView,options);
+        //заполняем View данными
+        //пока не подгрузилась картинка показываем дефолтную
+        holder.imageView.setImageResource(R.drawable.defaultimage);
+        if (singer.getCovers() != null) {
+            imageLoader.displayImage(singer.getCovers().get(Singer.coverTypes.small), holder.imageView, options);
+        }
         holder.name.setText(singer.getName());
         holder.styles.setText(singer.genresToString());
         int albumsNum = singer.getAlbums();
@@ -99,8 +101,11 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
         int tracksNum = singer.getTracks();
         String[] trackCases = {"песня", "песни", "песен"};
 
-        holder.description.setText(albumsNum + " " + singer.getEnding(albumsNum, albumCases) + " " + "\u2022" + " " +
-                tracksNum + " " + singer.getEnding(tracksNum, trackCases));
+        //склоняем альбомы и песни
+        String albumsDescr = "%d %s • %d %s";
+        albumsDescr = String.format(albumsDescr, albumsNum, singer.getEnding(albumsNum, albumCases),
+                tracksNum, singer.getEnding(tracksNum, trackCases));
+        holder.description.setText(albumsDescr);
         return view;
     }
 
@@ -108,35 +113,35 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
     public Filter getFilter() {
         return new Filter() {
             @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                List<Singer> filteredResult = getFilteredResults(charSequence);
-
-                FilterResults results = new FilterResults();
-                results.values = filteredResult;
-                results.count = filteredResult.size();
-
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                ArrayList<Singer> list = (ArrayList<Singer>) filterResults.values;
-                ListItemAdapter.this.notifyDataSetChanged();
-            }
-
-
-            private List<Singer> getFilteredResults(CharSequence constraint){
-                if (constraint.length() == 0){
-                    return  singers;
-                }
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults result = new FilterResults();
                 List<Singer> listResult = new ArrayList<Singer>();
-                for (Singer singer : singers){
-                    if (constraint.toString().contains(singer.getName())){
-                        listResult.add(singer);
+                if (constraint.length() == 0) {
+                    listResult.addAll(singers);
+                } else {
+                    for (Singer singer : singers) {
+                        if (singer.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                            listResult.add(singer);
+                        }
                     }
                 }
-                return listResult;
+                result.count = listResult.size();
+                result.values = listResult;
+
+                return result;
             }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                if (filterResults.count == 0) {
+                    notifyDataSetInvalidated();
+                } else {
+                    filteredSingers = (ArrayList<Singer>) filterResults.values;
+                    notifyDataSetChanged();
+                }
+            }
+
         };
     }
 }
