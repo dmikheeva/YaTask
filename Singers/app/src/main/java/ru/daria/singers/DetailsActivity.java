@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.seppius.i18n.plurals.PluralResources;
 
 public class DetailsActivity extends AppCompatActivity {
     //настройка кэширования изображений
@@ -63,15 +64,18 @@ public class DetailsActivity extends AppCompatActivity {
         description.setText(singer.getDescription());
         genres.setText(singer.genresToString());
         int albumsNum = singer.getAlbums();
-        String[] albumCases = {"альбом", "альбома", "альбомов"};
         int tracksNum = singer.getTracks();
-        String[] trackCases = {"песня", "песни", "песен"};
         //склоняем альбомы и песни
-        String albumsDescr = "%d %s • %d %s";
-        albumsDescr = String.format(albumsDescr, albumsNum, singer.getEnding(albumsNum, albumCases),
-                tracksNum, singer.getEnding(tracksNum, trackCases));
+        String albumsDescr = "%s • %s";
+        PluralResources pluralizer = null;
+        try {
+            pluralizer = new PluralResources(getResources());
+        } catch (Throwable t) {
+        }
+        albumsDescr = String.format(albumsDescr,
+                pluralizer.getQuantityString(R.plurals.songs,albumsNum,albumsNum),
+                pluralizer.getQuantityString(R.plurals.tracks, tracksNum, tracksNum));
         albums.setText(albumsDescr);
-
     }
 
     @Override

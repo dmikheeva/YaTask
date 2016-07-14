@@ -13,11 +13,13 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.seppius.i18n.plurals.PluralResources;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemAdapter extends BaseAdapter implements Filterable {
+    private Context context;
     private final ImageLoader imageLoader;
     private LayoutInflater lInflater;
     private List<Singer> singers;
@@ -40,6 +42,7 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
                            ImageLoader imageLoader,
                            View.OnClickListener callback
     ) {
+        this.context = context;
         this.singers = singers;
         this.filteredSingers = singers;
         this.imageLoader = imageLoader;
@@ -97,14 +100,18 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
         holder.name.setText(singer.getName());
         holder.styles.setText(singer.genresToString());
         int albumsNum = singer.getAlbums();
-        String[] albumCases = {"альбом", "альбома", "альбомов"};
         int tracksNum = singer.getTracks();
-        String[] trackCases = {"песня", "песни", "песен"};
 
         //склоняем альбомы и песни
-        String albumsDescr = "%d %s • %d %s";
-        albumsDescr = String.format(albumsDescr, albumsNum, singer.getEnding(albumsNum, albumCases),
-                tracksNum, singer.getEnding(tracksNum, trackCases));
+        String albumsDescr = "%s • %s";
+        PluralResources pluralizer = null;
+        try {
+            pluralizer = new PluralResources(context.getResources());
+        } catch (Throwable t) {
+        }
+        albumsDescr = String.format(albumsDescr,
+                pluralizer.getQuantityString(R.plurals.songs,albumsNum,albumsNum),
+                pluralizer.getQuantityString(R.plurals.tracks, tracksNum, tracksNum));
         holder.description.setText(albumsDescr);
         return view;
     }
