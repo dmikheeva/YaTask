@@ -12,3 +12,5 @@
 - юнит-тесты
 
 Ссылка на файл apk: https://yadi.sk/d/YwUL7bQfrDg3C
+
+.
