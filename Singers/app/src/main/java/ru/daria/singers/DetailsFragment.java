@@ -1,12 +1,12 @@
 package ru.daria.singers;
 
-import android.content.Intent;
+import android.app.Fragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,45 +14,53 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-public class DetailsActivity extends AppCompatActivity {
-    //настройка кэширования изображений
+/**
+ * Created by dsukmanova on 16.07.16.
+ */
+public class DetailsFragment extends Fragment {
     private static DisplayImageOptions options = new DisplayImageOptions.Builder().
             cacheInMemory(true).cacheOnDisk(true).build();
-    private String albumsDescr;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.details);
+    }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.details, container, false);
+        final MainActivity activity = (MainActivity)getActivity();
+
+        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        activity.showMenuVisible(toolbar.getMenu(), false);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //действие аналогично стандартной кнопке "Назад"
-                onBackPressed();
+                activity.onBackPressed();
             }
         });
 
-        ImageView image = (ImageView) findViewById(R.id.image);
-        TextView description = (TextView) findViewById(R.id.descriprion);
-        TextView genres = (TextView) findViewById(R.id.genres);
-        TextView albums = (TextView) findViewById(R.id.albums);
+        ImageView image = (ImageView) view.findViewById(R.id.image);
+        TextView description = (TextView) view.findViewById(R.id.descriprion);
+        TextView genres = (TextView) view.findViewById(R.id.genres);
+        TextView albums = (TextView) view.findViewById(R.id.albums);
         //получаем экземпляр Singer из MainActivity
-        Intent intent = getIntent();
-        Bundle b = intent.getExtras();
+        Bundle b = getArguments();
         Singer singer = (Singer) b.get("SINGER");
 
         toolbar.setTitle(singer.getName());
         //пока подгружается изображение показываем стандартное
         String uri = "@drawable/defaultimage";
-        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+        int imageResource = getResources().getIdentifier(uri, null, activity.getPackageName());
         Drawable res = getResources().getDrawable(imageResource);
         image.setImageDrawable(res);
 
         //Конфигурация для ImageLoader
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(activity).build();
         final ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(config);
 
@@ -63,20 +71,13 @@ public class DetailsActivity extends AppCompatActivity {
         description.setText(singer.getDescription());
         genres.setText(singer.genresToString());
         int albumsNum = singer.getAlbums();
-        String[] albumCases = {"альбом", "альбома", "альбомов"};
         int tracksNum = singer.getTracks();
-        String[] trackCases = {"песня", "песни", "песен"};
         //склоняем альбомы и песни
-        String albumsDescr = "%d %s • %d %s";
-        albumsDescr = String.format(albumsDescr, albumsNum, singer.getEnding(albumsNum, albumCases),
-                tracksNum, singer.getEnding(tracksNum, trackCases));
+        String albumsDescr = "%s • %s";
+        albumsDescr = String.format(albumsDescr,
+                getResources().getQuantityString(R.plurals.songs, albumsNum, albumsNum),
+                getResources().getQuantityString(R.plurals.tracks, tracksNum, tracksNum));
         albums.setText(albumsDescr);
-
+        return view;
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
 }

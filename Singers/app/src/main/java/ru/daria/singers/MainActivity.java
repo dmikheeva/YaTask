@@ -1,9 +1,10 @@
 package ru.daria.singers;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,56 +12,29 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
 import android.support.v7.widget.SearchView;
-
-import com.nhaarman.listviewanimations.appearance.simple.SwingRightInAnimationAdapter;
-import com.nostra13.universalimageloader.core.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements MainFragment.OnSingerSelectedListener {
     List<Singer> singers = new ArrayList<>();
-    ListItemAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Конфигурация для ImageLoader
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        final ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(config);
-
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        Intent intent = getIntent();
-        //получаем список исполнителей из HomeActivity
-        singers = (List<Singer>) intent.getSerializableExtra("SINGERS");
-
-        adapter = new ListItemAdapter(MainActivity.this, singers, imageLoader, MainActivity.this);
-
-        //анимация при пролистывании списка исполнителей
-        final SwingRightInAnimationAdapter rightInAnimationAdapter = new SwingRightInAnimationAdapter(adapter);
-
-        ListView mainList = (ListView) findViewById(R.id.listView);
-        rightInAnimationAdapter.setAbsListView(mainList);
-        mainList.setAdapter(rightInAnimationAdapter);
-        mainList.setTextFilterEnabled(true);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MainFragment fragment = new MainFragment();
+        fragmentTransaction.add(R.id.fragmentContainer, fragment);
+        fragmentTransaction.commit();
     }
 
-    //Действие по нажатию строки в ListView с исполнителями
-    @Override
-    public void onClick(View view) {
-        int position = ((ListView) view.getParent()).getPositionForView(view);
-        Singer singer = adapter.getSinger(position);
-        Intent info = new Intent(this, DetailsActivity.class);
-        info.putExtra("SINGER", singer);
-        startActivity(info);
+    private ListItemAdapter getListAdapter() {
+        MainFragment currFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
+        return currFragment.adapter;
     }
 
     @Override
@@ -81,14 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //при подтверждении текста поиска
-                adapter.getFilter().filter(query);
+                getListAdapter().getFilter().filter(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 //при изменении текста поиска
-                adapter.getFilter().filter(newText);
+                getListAdapter().getFilter().filter(newText);
                 return true;
             }
         };
@@ -96,9 +70,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void showMenuVisible (Menu menu, boolean showMenu){
+        if(menu == null) return;
+        menu.setGroupVisible(R.id.main_menu_group, showMenu);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            this.finish();
+        } else {
+            getFragmentManager().popBackStack();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(null);
+            toolbar.setTitle(R.string.app_name);
+            showMenuVisible(toolbar.getMenu(), true);
+        }
+    }
+
+    @Override
+    public void onSingerSelected(Singer singer) {
+        DetailsFragment fragment = new DetailsFragment();
+        Bundle arg = new Bundle();
+        arg.putSerializable("SINGER", singer);
+        fragment.setArguments(arg);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }

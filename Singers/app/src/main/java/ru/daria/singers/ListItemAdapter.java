@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemAdapter extends BaseAdapter implements Filterable {
+    private Context context;
     private final ImageLoader imageLoader;
     private LayoutInflater lInflater;
     private List<Singer> singers;
@@ -40,6 +41,7 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
                            ImageLoader imageLoader,
                            View.OnClickListener callback
     ) {
+        this.context = context;
         this.singers = singers;
         this.filteredSingers = singers;
         this.imageLoader = imageLoader;
@@ -102,9 +104,10 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
         String[] trackCases = {"песня", "песни", "песен"};
 
         //склоняем альбомы и песни
-        String albumsDescr = "%d %s • %d %s";
-        albumsDescr = String.format(albumsDescr, albumsNum, singer.getEnding(albumsNum, albumCases),
-                tracksNum, singer.getEnding(tracksNum, trackCases));
+        String albumsDescr = "%s • %s";
+        albumsDescr = String.format(albumsDescr,
+                context.getResources().getQuantityString(R.plurals.songs,albumsNum,albumsNum),
+                context.getResources().getQuantityString(R.plurals.tracks, tracksNum, tracksNum));
         holder.description.setText(albumsDescr);
         return view;
     }

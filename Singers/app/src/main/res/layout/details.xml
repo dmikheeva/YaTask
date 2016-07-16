@@ -7,19 +7,10 @@
     android:fitsSystemWindows="true"
     tools:context="ru.daria.singers.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <include android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
-    </android.support.design.widget.AppBarLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/scrollView" >
 
     <LinearLayout

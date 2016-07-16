@@ -1,7 +1,6 @@
 package ru.daria.singers;
 
 import java.io.Serializable;
-import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 
