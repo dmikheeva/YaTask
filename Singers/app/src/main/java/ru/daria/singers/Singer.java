@@ -112,38 +112,4 @@ public class Singer implements Serializable {
     public String toString() {
         return name.toString();
     }
-
-    /**
-     * Функция возвращает окончание для множественного числа слова на основании числа и массива окончаний
-     *
-     * @param number      int Число на основе которого нужно сформировать окончание
-     * @param endingArray Array Массив слов или окончаний для чисел (1, 4, 5),
-     *                    например array('песня', 'песни', 'песен')
-     * @return String
-     */
-    public String getEnding(int number, String[] endingArray) {
-        if (endingArray.length != 3)
-            throw new ArrayIndexOutOfBoundsException("Out of bounds exception. Array must contains 3 elements!");
-        number = number % 100;
-        String ending = "";
-        if (number >= 11 && number <= 19) {
-            ending = endingArray[2];
-        } else {
-            int i = number % 10;
-            switch (i) {
-                case (1):
-                    ending = endingArray[0];
-                    break;
-                case (2):
-                case (3):
-                case (4):
-                    ending = endingArray[1];
-                    break;
-                default:
-                    ending = endingArray[2];
-            }
-        }
-        return ending;
-    }
-
 }
