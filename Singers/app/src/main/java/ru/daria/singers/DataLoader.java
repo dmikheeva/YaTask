@@ -17,7 +17,7 @@ import java.net.URL;
  * Created by dsukmanova on 17.07.16.
  */
 public class DataLoader extends Loader<String> {
-    ExtractorNew extractor;
+    Extractor extractor;
 
     public DataLoader(Context context) {
         super(context);
@@ -38,7 +38,7 @@ public class DataLoader extends Loader<String> {
         super.onForceLoad();
         if (extractor != null)
             extractor.cancel(true);
-        extractor = new ExtractorNew();
+        extractor = new Extractor();
         extractor.execute();
     }
 
@@ -53,12 +53,12 @@ public class DataLoader extends Loader<String> {
     }
 
 
-    class ExtractorNew extends AsyncTask<Void, Void, String> {
+    class Extractor extends AsyncTask<Void, Void, String> {
         private final String URLSingers = "http://cache-default06g.cdn.yandex.net/download.cdn.yandex.net/mobilization-2016/artists.json";
         private HttpURLConnection urlConnection = null;
         private String resultJson = "";
 
-        public ExtractorNew() {
+        public Extractor() {
         }
 
         public void getResultFromTask(String result) {
