@@ -1,5 +1,7 @@
 package ru.daria.singers;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
@@ -67,17 +69,29 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
             }
         };
         searchView.setOnQueryTextListener(textChangeListener);
+
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void showMenuVisible (Menu menu, boolean showMenu){
-        if(menu == null) return;
+    public void showMenuVisible(Menu menu, boolean showMenu) {
+        if (menu == null) return;
         menu.setGroupVisible(R.id.main_menu_group, showMenu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //пункт меню "О программе"
+        switch (item.getItemId()) {
+            case R.id.about:
+                FragmentManager fragmentManager = getFragmentManager();
+                AboutProgramDialog aboutProgramDialog = new AboutProgramDialog();
+                aboutProgramDialog.show(fragmentManager, "О программе");
+                break;
+            default:
+                break;
+        }
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
