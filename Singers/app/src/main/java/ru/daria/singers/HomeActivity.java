@@ -1,7 +1,9 @@
 package ru.daria.singers;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,33 +23,48 @@ import java.util.Map;
 /**
  * Activity для отображения окна приветствия, загрузки списка исполнителей
  */
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements LoaderManager.LoaderCallbacks<String> {
     List<Singer> singers = new ArrayList<Singer>();
+    final int LOADER_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-        Extractor ex = new Extractor(new Extractor.AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                try {
-                    JSONArray dataJson = new JSONArray(output);
-                    singers = getSingersFromJson(dataJson);
-                    Intent i = new Intent(HomeActivity.this, MainActivity.class);
-                    i.putExtra("SINGERS", (Serializable) singers);
-                    startActivity(i);
-                    finish();
-                } catch (JSONException ex) {
-                    ex.printStackTrace();
-                    Button b = (Button) findViewById(R.id.tryAgainButton);
-                    b.setVisibility(View.VISIBLE);
-                    TextView v = (TextView) findViewById(R.id.splashText);
-                    v.setText("Невозможно загрузить список исполнителей.");
-                }
-            }
-        });
-        ex.execute();
+        Loader loader = getLoaderManager().initLoader(LOADER_ID, null, this);
+        loader.forceLoad();
+    }
+
+    @Override
+    public Loader<String> onCreateLoader(int id, Bundle args) {
+        Loader<String> loader = null;
+        if (id == LOADER_ID) {
+            loader = new DataLoader(this);
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+        try {
+            JSONArray dataJson = new JSONArray(data);
+            singers = getSingersFromJson(dataJson);
+            Intent i = new Intent(HomeActivity.this, MainActivity.class);
+            i.putExtra("SINGERS", (Serializable) singers);
+            startActivity(i);
+            finish();
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+            Button b = (Button) findViewById(R.id.tryAgainButton);
+            b.setVisibility(View.VISIBLE);
+            TextView v = (TextView) findViewById(R.id.splashText);
+            v.setText("Невозможно загрузить список исполнителей.");
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
     }
 
     public void buttonOnClick(View view) {
@@ -109,5 +126,4 @@ public class HomeActivity extends Activity {
         }
         return singers;
     }
-
 }
