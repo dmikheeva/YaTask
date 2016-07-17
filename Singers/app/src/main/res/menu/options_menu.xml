@@ -12,5 +12,7 @@
     <item android:id="@+id/about"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/aboutTitle"/>
+    <item android:id="@+id/feedback"
+        android:title="@string/feedback"/>
     </group>
 </menu>

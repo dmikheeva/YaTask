@@ -7,6 +7,9 @@ import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -80,12 +83,26 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //пункт меню "О программе"
         switch (item.getItemId()) {
+            //"О программе"
             case R.id.about:
                 FragmentManager fragmentManager = getFragmentManager();
                 AboutProgramDialog aboutProgramDialog = new AboutProgramDialog();
                 aboutProgramDialog.show(fragmentManager, "О программе");
+                break;
+            //"Обратная связь"
+            case R.id.feedback:
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                Resources recources = getResources();
+                String uriText = String.format("mailto:%s ?subject= %s &body=%s",
+                        recources.getString(R.string.contactEmail),
+                        recources.getString(R.string.feedbackSubj),
+                        recources.getString(R.string.feedbackText));
+                Uri uri = Uri.parse(uriText);
+                intent.setData(uri);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent mailer = Intent.createChooser(intent, null);
+                startActivity(mailer);
                 break;
             default:
                 break;

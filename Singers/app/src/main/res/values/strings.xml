@@ -11,5 +11,9 @@
         Программа создана в рамках проекта \"Мобилизация\" компании Яндекс \n
         Версия: 0.0.1
     </string>
+    <string name="feedback">Обратная связь</string>
+    <string name="contactEmail">sukmanovadarya@yandex.ru</string>
+    <string name="feedbackSubj">"Music Artists" problem</string>
+    <string name="feedbackText">Напишите о вашей проблеме...</string>
 
 </resources>
