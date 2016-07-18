@@ -1,12 +1,15 @@
 package ru.daria.singers;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager;
-import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,27 +24,39 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Activity для отображения окна приветствия, загрузки списка исполнителей
+ * Created by dsukmanova on 17.07.16.
  */
-public class HomeActivity extends Activity implements LoaderManager.LoaderCallbacks<String> {
+public class HomeFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
     List<Singer> singers = new ArrayList<Singer>();
     final int LOADER_ID = 0;
+    View view;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
+    }
+
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.splash, container, false);
         Loader loader = getLoaderManager().initLoader(LOADER_ID, null, this);
         loader.forceLoad();
+        return view;
     }
 
     @Override
     public Loader<String> onCreateLoader(int id, Bundle args) {
         Loader<String> loader = null;
         if (id == LOADER_ID) {
-            loader = new DataLoader(this);
+            loader = new DataLoader(getActivity());
         }
         return loader;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
     }
 
     @Override
@@ -49,29 +64,29 @@ public class HomeActivity extends Activity implements LoaderManager.LoaderCallba
         try {
             JSONArray dataJson = new JSONArray(data);
             singers = getSingersFromJson(dataJson);
-            Intent i = new Intent(HomeActivity.this, MainActivity.class);
-            i.putExtra("SINGERS", (Serializable) singers);
-            startActivity(i);
-            finish();
+            MainFragment fragment = new MainFragment();
+            Bundle arg = new Bundle();
+            arg.putSerializable("SINGERS", (Serializable) singers);
+            fragment.setArguments(arg);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragmentContainer, fragment);
+            fragmentTransaction.commitAllowingStateLoss();
         } catch (JSONException ex) {
             ex.printStackTrace();
-            Button b = (Button) findViewById(R.id.tryAgainButton);
+            Button b = (Button) view.findViewById(R.id.tryAgainButton);
             b.setVisibility(View.VISIBLE);
-            TextView v = (TextView) findViewById(R.id.splashText);
+            TextView v = (TextView) view.findViewById(R.id.splashText);
             v.setText("Невозможно загрузить список исполнителей.");
         }
 
     }
 
-    @Override
-    public void onLoaderReset(Loader<String> loader) {
-    }
-
     public void buttonOnClick(View view) {
-        Button b = (Button) findViewById(R.id.tryAgainButton);
+        Button b = (Button) view.findViewById(R.id.tryAgainButton);
         b.setVisibility(View.INVISIBLE);
-        Intent i = new Intent(HomeActivity.this, HomeActivity.class);
-        startActivity(i);
+        getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
     }
 
     /**
@@ -127,3 +142,4 @@ public class HomeActivity extends Activity implements LoaderManager.LoaderCallba
         return singers;
     }
 }
+

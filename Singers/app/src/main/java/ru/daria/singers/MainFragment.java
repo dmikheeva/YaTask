@@ -55,8 +55,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         final ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(config);
 
-        //получаем список исполнителей из HomeActivity
-        singers = (List<Singer>) activity.getIntent().getSerializableExtra("SINGERS");
+        //получаем список исполнителей из HomeFragment
+        Bundle b = getArguments();
+        if (b != null) {
+            singers = (List<Singer>) b.get("SINGERS");
+        }
 
         adapter = new ListItemAdapter(activity, singers, imageLoader, this);
         final SwingRightInAnimationAdapter rightInAnimationAdapter = new SwingRightInAnimationAdapter(adapter);

@@ -1,7 +1,5 @@
 package ru.daria.singers;
 
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
@@ -32,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        MainFragment fragment = new MainFragment();
+        HomeFragment fragment = new HomeFragment();
         fragmentTransaction.add(R.id.fragmentContainer, fragment);
         fragmentTransaction.commit();
     }
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
                 Uri uri = Uri.parse(uriText);
                 intent.setData(uri);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Intent mailer = Intent.createChooser(intent, null);
+                Intent mailer = Intent.createChooser(intent, "Напишите нам...");
                 startActivity(mailer);
                 break;
             default:
