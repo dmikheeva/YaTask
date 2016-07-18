@@ -27,12 +27,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        HomeFragment fragment = new HomeFragment();
-        fragmentTransaction.add(R.id.fragmentContainer, fragment);
-        fragmentTransaction.commit();
+        if (savedInstanceState == null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            HomeFragment fragment = new HomeFragment();
+            fragmentTransaction.add(R.id.fragmentContainer, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     private ListItemAdapter getListAdapter() {
