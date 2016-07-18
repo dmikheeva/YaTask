@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Исполнители</string>
+    <string name="title_activity_main">Исполнители</string>
     <string name="search_hint">Введите имя исполнителя&#8230;</string>
     <string name="action_settings">Настройки</string>
     <color name="white">#FFFFFF</color>
-    <string name="title_activity_home">MusicArtists</string>
+    <string name="app_name">MusicArtists</string>
     <string name="search">Поиск</string>
     <string name="aboutTitle">О программе</string>
     <string name="aboutHead">Music Artists for Android</string>

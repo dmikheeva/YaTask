@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
             getFragmentManager().popBackStack();
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setNavigationIcon(null);
-            toolbar.setTitle(R.string.app_name);
+            toolbar.setTitle(R.string.title_activity_main);
             showMenuVisible(toolbar.getMenu(), true);
         }
     }
