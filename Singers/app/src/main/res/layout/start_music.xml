@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/yaMusic"
+        android:src="@drawable/ic_ya_music"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/cancelButton" />
+
+    <ImageView
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:id="@+id/yaRadio"
+        android:src="@drawable/ic_ya_radio"
+        android:layout_alignTop="@+id/yaMusic"
+        android:layout_toEndOf="@+id/cancelButton" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Яндекс.Музыка"
+        android:id="@+id/yaMusicText"
+        android:layout_below="@+id/yaMusic"
+        android:layout_alignStart="@+id/yaMusic" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Яндекс.Радио"
+        android:id="@+id/yaRadioText"
+        android:layout_below="@+id/yaRadio"
+        android:layout_alignStart="@+id/yaRadio" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Отмена"
+        android:layout_marginTop="20dp"
+        android:id="@+id/cancelButton"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/yaMusicText"
+        android:layout_centerHorizontal="true"
+         />
+
+</RelativeLayout>

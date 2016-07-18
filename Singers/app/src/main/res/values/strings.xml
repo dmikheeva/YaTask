@@ -16,4 +16,5 @@
     <string name="feedbackSubj">"Music Artists" problem</string>
     <string name="feedbackText">Напишите о вашей проблеме...</string>
 
+    <string name="chooseApp">Выберите приложение</string>
 </resources>

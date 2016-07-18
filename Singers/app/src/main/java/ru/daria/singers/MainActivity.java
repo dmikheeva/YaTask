@@ -3,9 +3,11 @@ package ru.daria.singers;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnSingerSelectedListener {
     List<Singer> singers = new ArrayList<>();
+    HeadsetPlugReceiver headsetPlugReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,4 +139,40 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.headsetPlugReceiver = new HeadsetPlugReceiver();
+        registerReceiver(this.headsetPlugReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(headsetPlugReceiver);
+        super.onPause();
+    }
+
+    private void showMusicDialog() {
+        MusicDialog musicDialog = new MusicDialog();
+        musicDialog.show(getFragmentManager(), null);
+    }
+
+    public class HeadsetPlugReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+                int state = intent.getIntExtra("state", -1);
+                switch (state) {
+                    case 1:
+                        //headset_plugged
+                        showMusicDialog();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
 }
