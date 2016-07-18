@@ -159,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     }
 
     public class HeadsetPlugReceiver extends BroadcastReceiver {
+        private boolean headsetEnabled = true;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
@@ -166,7 +168,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
                 switch (state) {
                     case 1:
                         //headset_plugged
-                        showMusicDialog();
+                        if (headsetEnabled == false) {
+                            headsetEnabled = true;
+                            showMusicDialog();
+                        }
+                        break;
+                    case 0:
+                        headsetEnabled = false;
                         break;
                     default:
                         break;
