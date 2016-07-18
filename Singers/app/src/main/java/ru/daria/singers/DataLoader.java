@@ -1,8 +1,7 @@
 package ru.daria.singers;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.content.Loader;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -16,8 +15,10 @@ import java.net.URL;
 /**
  * Created by dsukmanova on 17.07.16.
  */
-public class DataLoader extends Loader<String> {
-    Extractor extractor;
+public class DataLoader extends AsyncTaskLoader<String> {
+    private final String URLSingers = "http://cache-default06g.cdn.yandex.net/download.cdn.yandex.net/mobilization-2016/artists.json";
+    private HttpURLConnection urlConnection = null;
+    private String resultJson;
 
     public DataLoader(Context context) {
         super(context);
@@ -26,6 +27,15 @@ public class DataLoader extends Loader<String> {
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
+        if (resultJson != null) {
+            deliverResult(resultJson);
+        } else {
+            forceLoad();
+        }
+    }
+    @Override
+    public void deliverResult(String data) {
+        super.deliverResult(data);
     }
 
     @Override
@@ -36,10 +46,35 @@ public class DataLoader extends Loader<String> {
     @Override
     protected void onForceLoad() {
         super.onForceLoad();
-        if (extractor != null)
-            extractor.cancel(true);
-        extractor = new Extractor();
-        extractor.execute();
+    }
+
+    @Override
+    public String loadInBackground() {
+
+        try {
+            URL url = new URL(URLSingers);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            InputStream inputStream = urlConnection.getInputStream();
+            StringBuilder buffer = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+            }
+            resultJson = buffer.toString();
+        } catch (MalformedURLException e) {
+            Log.e("ERROR", "URL is not available");
+        } catch (IOException ex) {
+            Log.e("ERROR", "Cannot open url connection.");
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return resultJson;
     }
 
     @Override
@@ -50,55 +85,5 @@ public class DataLoader extends Loader<String> {
     @Override
     protected void onReset() {
         super.onReset();
-    }
-
-
-    class Extractor extends AsyncTask<Void, Void, String> {
-        private final String URLSingers = "http://cache-default06g.cdn.yandex.net/download.cdn.yandex.net/mobilization-2016/artists.json";
-        private HttpURLConnection urlConnection = null;
-        private String resultJson = "";
-
-        public Extractor() {
-        }
-
-        public void getResultFromTask(String result) {
-            deliverResult(result);
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            // получаем данные с внешнего ресурса
-            try {
-                URL url = new URL(URLSingers);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuilder buffer = new StringBuilder();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-            } catch (MalformedURLException e) {
-                Log.e("ERROR", "URL is not available");
-            } catch (IOException ex) {
-                Log.e("ERROR", "Cannot open url connection.");
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return resultJson;
-        }
-
-        @Override
-        protected void onPostExecute(String strJson) {
-            super.onPostExecute(strJson);
-            getResultFromTask(strJson);
-        }
     }
 }

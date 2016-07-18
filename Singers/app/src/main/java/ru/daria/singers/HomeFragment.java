@@ -36,12 +36,17 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Loader loader = getLoaderManager().initLoader(LOADER_ID, null, this);
+        loader.forceLoad();
+    }
+
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.splash, container, false);
-        Loader loader = getLoaderManager().initLoader(LOADER_ID, null, this);
-        loader.forceLoad();
         return view;
     }
 
@@ -77,16 +82,18 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             ex.printStackTrace();
             Button b = (Button) view.findViewById(R.id.tryAgainButton);
             b.setVisibility(View.VISIBLE);
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Button b = (Button) v;//view.findViewById(R.id.tryAgainButton);
+                    b.setVisibility(View.INVISIBLE);
+                    getLoaderManager().initLoader(LOADER_ID, null, HomeFragment.this).forceLoad();
+                }
+            });
             TextView v = (TextView) view.findViewById(R.id.splashText);
             v.setText("Невозможно загрузить список исполнителей.");
         }
 
-    }
-
-    public void buttonOnClick(View view) {
-        Button b = (Button) view.findViewById(R.id.tryAgainButton);
-        b.setVisibility(View.INVISIBLE);
-        getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
     }
 
     /**
