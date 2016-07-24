@@ -55,10 +55,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader<DataLoaderResult<List<Singer>>> onCreateLoader(int id, Bundle args) {
-        DataLoader loader = null;
-        if (id == LOADER_ID) {
-            loader = new DataLoader(getActivity());
-        }
+        DataLoader loader = new DataLoader(getActivity());
         return loader;
     }
 
