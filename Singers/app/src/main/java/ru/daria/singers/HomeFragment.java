@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                     public void onClick(View v) {
                         Button b = (Button) v;
                         b.setVisibility(View.INVISIBLE);
-                        getLoaderManager().initLoader(LOADER_ID, null, HomeFragment.this).forceLoad();
+                        getLoaderManager().restartLoader(LOADER_ID, null, HomeFragment.this);
                     }
                 });
                 TextView v = ButterKnife.findById(view, R.id.splashText);
