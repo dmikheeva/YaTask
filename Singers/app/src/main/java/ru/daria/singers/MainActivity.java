@@ -92,31 +92,37 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            //"О программе"
             case R.id.about:
-                FragmentManager fragmentManager = getFragmentManager();
-                AboutProgramDialog aboutProgramDialog = new AboutProgramDialog();
-                aboutProgramDialog.show(fragmentManager, "О программе");
+                openAboutProgrammDialog();
                 break;
-            //"Обратная связь"
             case R.id.feedback:
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                Resources recources = getResources();
-                String uriText = String.format("mailto:%s ?subject= %s &body=%s",
-                        recources.getString(R.string.contactEmail),
-                        recources.getString(R.string.feedbackSubj),
-                        recources.getString(R.string.feedbackText));
-                Uri uri = Uri.parse(uriText);
-                intent.setData(uri);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Intent mailer = Intent.createChooser(intent, "Напишите нам...");
-                startActivity(mailer);
+                openFeedbackDialog();
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
 
+    }
+
+    private void openAboutProgrammDialog() {
+        FragmentManager fragmentManager = getFragmentManager();
+        AboutProgramDialog aboutProgramDialog = new AboutProgramDialog();
+        aboutProgramDialog.show(fragmentManager, "О программе");
+    }
+
+    private void openFeedbackDialog() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        Resources recources = getResources();
+        String uriText = String.format("mailto:%s ?subject= %s &body=%s",
+                recources.getString(R.string.contactEmail),
+                recources.getString(R.string.feedbackSubj),
+                recources.getString(R.string.feedbackText));
+        Uri uri = Uri.parse(uriText);
+        intent.setData(uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent mailer = Intent.createChooser(intent, "Напишите нам...");
+        startActivity(mailer);
     }
 
     @Override
@@ -137,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
         Bundle arg = new Bundle();
         arg.putSerializable("SINGER", singer);
         fragment.setArguments(arg);
-
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, fragment);
