@@ -93,10 +93,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.about:
-                openAboutProgrammDialog();
+                onAboutProgramItemSelected();
                 break;
             case R.id.feedback:
-                openFeedbackDialog();
+                onFeedbackItemSelected();
                 break;
             default:
                 break;
@@ -105,13 +105,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
 
     }
 
-    private void openAboutProgrammDialog() {
+    private void onAboutProgramItemSelected() {
         FragmentManager fragmentManager = getFragmentManager();
         AboutProgramDialog aboutProgramDialog = new AboutProgramDialog();
         aboutProgramDialog.show(fragmentManager, "О программе");
     }
 
-    private void openFeedbackDialog() {
+    private void onFeedbackItemSelected() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         Resources recources = getResources();
         String uriText = String.format("mailto:%s ?subject= %s &body=%s",
