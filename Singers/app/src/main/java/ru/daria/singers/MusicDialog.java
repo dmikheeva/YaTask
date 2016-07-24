@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by dsukmanova on 18.07.16.
  */
@@ -21,7 +23,7 @@ public class MusicDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         getDialog().setTitle(R.string.chooseApp);
         View view = inflater.inflate(R.layout.start_music, null);
-        view.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+        ButterKnife.findById(view,R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDialog().dismiss();
@@ -49,8 +51,8 @@ public class MusicDialog extends DialogFragment {
                 startActivity(intent);
             }
         };
-        view.findViewById(R.id.yaRadio).setOnClickListener(onIconClickListener);
-        view.findViewById(R.id.yaMusic).setOnClickListener(onIconClickListener);
+        ButterKnife.findById(view,R.id.yaRadio).setOnClickListener(onIconClickListener);
+        ButterKnife.findById(view,R.id.yaMusic).setOnClickListener(onIconClickListener);
         return view;
     }
 

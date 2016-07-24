@@ -14,6 +14,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by dsukmanova on 16.07.16.
  */
@@ -24,6 +27,7 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //ButterKnife.bind(this);
     }
 
     @Override
@@ -31,9 +35,9 @@ public class DetailsFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.details, container, false);
-        final MainActivity activity = (MainActivity)getActivity();
+        final MainActivity activity = (MainActivity) getActivity();
 
-        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+        Toolbar toolbar = activity.getToolbar();
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         activity.showMenuVisible(toolbar.getMenu(), false);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -44,10 +48,10 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-        ImageView image = (ImageView) view.findViewById(R.id.image);
-        TextView description = (TextView) view.findViewById(R.id.descriprion);
-        TextView genres = (TextView) view.findViewById(R.id.genres);
-        TextView albums = (TextView) view.findViewById(R.id.albums);
+        ImageView image = ButterKnife.findById(view, R.id.image);
+        TextView description = ButterKnife.findById(view, R.id.descriprion);
+        TextView genres = ButterKnife.findById(view, R.id.genres);
+        TextView albums = ButterKnife.findById(view, R.id.albums);
         //получаем экземпляр Singer из MainActivity
         Bundle b = getArguments();
         Singer singer = (Singer) b.get("SINGER");

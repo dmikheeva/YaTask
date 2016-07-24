@@ -17,6 +17,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ListItemAdapter extends BaseAdapter implements Filterable {
     private Context context;
     private final ImageLoader imageLoader;
@@ -29,13 +32,6 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
     private static DisplayImageOptions options = new DisplayImageOptions.Builder().
             cacheInMemory(true).cacheOnDisk(true).build();
 
-    static class ViewHolder {
-        public ImageView imageView;
-        public TextView name;
-        public TextView styles;
-        public TextView description;
-    }
-
     public ListItemAdapter(Activity context,
                            List<Singer> singers,
                            ImageLoader imageLoader,
@@ -47,6 +43,21 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
         this.imageLoader = imageLoader;
         this.lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.callback = callback;
+    }
+
+    static class ViewHolder {
+        @BindView(R.id.image)
+        ImageView image;
+        @BindView(R.id.singer)
+        TextView name;
+        @BindView(R.id.styles)
+        TextView styles;
+        @BindView(R.id.albums)
+        TextView description;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
     @Override
@@ -78,11 +89,7 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
         //используем созданные ранее View, но уже не используемые
         if (view == null) {
             view = lInflater.inflate(R.layout.list_single, parent, false);
-            holder = new ViewHolder();
-            holder.imageView = (ImageView) view.findViewById(R.id.image);
-            holder.name = (TextView) view.findViewById(R.id.singer);
-            holder.styles = (TextView) view.findViewById(R.id.styles);
-            holder.description = (TextView) view.findViewById(R.id.albums);
+            holder = new ViewHolder(view);
             view.setClickable(true);
             view.setOnClickListener(callback);
             view.setTag(holder);
@@ -92,9 +99,9 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
         Singer singer = getSinger(position);
         //заполняем View данными
         //пока не подгрузилась картинка показываем дефолтную
-        holder.imageView.setImageResource(R.drawable.defaultimage);
+        holder.image.setImageResource(R.drawable.defaultimage);
         if (singer.getCovers() != null) {
-            imageLoader.displayImage(singer.getCovers().get(Singer.coverTypes.small), holder.imageView, options);
+            imageLoader.displayImage(singer.getCovers().get(Singer.coverTypes.small), holder.image, options);
         }
         holder.name.setText(singer.getName());
         holder.styles.setText(singer.genresToString());
@@ -106,7 +113,7 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
         //склоняем альбомы и песни
         String albumsDescr = "%s • %s";
         albumsDescr = String.format(albumsDescr,
-                context.getResources().getQuantityString(R.plurals.songs,albumsNum,albumsNum),
+                context.getResources().getQuantityString(R.plurals.songs, albumsNum, albumsNum),
                 context.getResources().getQuantityString(R.plurals.tracks, tracksNum, tracksNum));
         holder.description.setText(albumsDescr);
         return view;

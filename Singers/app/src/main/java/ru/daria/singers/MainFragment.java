@@ -17,6 +17,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by dsukmanova on 15.07.16.
  */
@@ -46,9 +48,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.content_main, container, false);
         Activity activity = getActivity();
 
-        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
-
-        ((AppCompatActivity) activity).setSupportActionBar(toolbar);
+        ((AppCompatActivity) activity).setSupportActionBar(((MainActivity)activity).getToolbar());
 
         // Конфигурация для ImageLoader
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity()).build();
@@ -64,7 +64,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         adapter = new ListItemAdapter(activity, singers, imageLoader, this);
         final SwingRightInAnimationAdapter rightInAnimationAdapter = new SwingRightInAnimationAdapter(adapter);
 
-        ListView mainList = (ListView) view.findViewById(R.id.listView);
+        ListView mainList = ButterKnife.findById(view,R.id.listView);
         rightInAnimationAdapter.setAbsListView(mainList);
         mainList.setAdapter(rightInAnimationAdapter);
         mainList.setTextFilterEnabled(true);

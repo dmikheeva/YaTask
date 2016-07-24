@@ -22,14 +22,20 @@ import android.support.v7.widget.SearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements MainFragment.OnSingerSelectedListener {
     List<Singer> singers = new ArrayList<>();
     HeadsetPlugReceiver headsetPlugReceiver;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -119,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
             this.finish();
         } else {
             getFragmentManager().popBackStack();
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setNavigationIcon(null);
             toolbar.setTitle(R.string.title_activity_main);
             showMenuVisible(toolbar.getMenu(), true);
@@ -181,6 +186,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
                 }
             }
         }
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
     }
 
 }

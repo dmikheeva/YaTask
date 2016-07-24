@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by dsukmanova on 17.07.16.
  */
@@ -80,17 +82,17 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             fragmentTransaction.commitAllowingStateLoss();
         } catch (JSONException ex) {
             ex.printStackTrace();
-            Button b = (Button) view.findViewById(R.id.tryAgainButton);
+            Button b = ButterKnife.findById(view,R.id.tryAgainButton);
             b.setVisibility(View.VISIBLE);
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Button b = (Button) v;//view.findViewById(R.id.tryAgainButton);
+                    Button b = (Button) v;
                     b.setVisibility(View.INVISIBLE);
                     getLoaderManager().initLoader(LOADER_ID, null, HomeFragment.this).forceLoad();
                 }
             });
-            TextView v = (TextView) view.findViewById(R.id.splashText);
+            TextView v = ButterKnife.findById(view,R.id.splashText);
             v.setText("Невозможно загрузить список исполнителей.");
         }
 
