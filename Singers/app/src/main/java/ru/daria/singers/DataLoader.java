@@ -39,16 +39,6 @@ public class DataLoader extends AsyncTaskLoader<String> {
     }
 
     @Override
-    protected void onStopLoading() {
-        super.onStopLoading();
-    }
-
-    @Override
-    protected void onForceLoad() {
-        super.onForceLoad();
-    }
-
-    @Override
     public String loadInBackground() {
 
         try {
@@ -77,13 +67,4 @@ public class DataLoader extends AsyncTaskLoader<String> {
         return resultJson;
     }
 
-    @Override
-    protected void onAbandon() {
-        super.onAbandon();
-    }
-
-    @Override
-    protected void onReset() {
-        super.onReset();
-    }
 }
