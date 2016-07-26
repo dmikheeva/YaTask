@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            HomeFragment fragment = new HomeFragment();
+            MainFragment fragment = new MainFragment();
             fragmentTransaction.add(R.id.fragmentContainer, fragment);
             fragmentTransaction.commit();
         }
