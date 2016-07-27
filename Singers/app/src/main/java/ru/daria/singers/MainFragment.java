@@ -2,8 +2,6 @@ package ru.daria.singers;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
@@ -12,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.nhaarman.listviewanimations.appearance.simple.SwingRightInAnimationAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -71,17 +70,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Load
                 ex.printStackTrace();
             }
         } else {
-
             singers = data.getResult();
-            MainFragment fragment = new MainFragment();
-            Bundle arg = new Bundle();
-            arg.putSerializable("SINGERS", (Serializable) singers);
-            fragment.setArguments(arg);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragmentContainer, fragment);
-            fragmentTransaction.commitAllowingStateLoss();
+            adapter.setSingers(singers);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -114,15 +105,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Load
         final ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(config);
 
-        //получаем список исполнителей из HomeFragment
-        Bundle b = getArguments();
-        if (b != null) {
-            singers = (List<Singer>) b.get("SINGERS");
-        }
-
         adapter = new ListItemAdapter(activity, singers, imageLoader, this);
-        final SwingRightInAnimationAdapter rightInAnimationAdapter = new SwingRightInAnimationAdapter(adapter);
 
+        final SwingRightInAnimationAdapter rightInAnimationAdapter = new SwingRightInAnimationAdapter(adapter);
         ListView mainList = ButterKnife.findById(view,R.id.listView);
         rightInAnimationAdapter.setAbsListView(mainList);
         mainList.setAdapter(rightInAnimationAdapter);

@@ -154,4 +154,13 @@ public class ListItemAdapter extends BaseAdapter implements Filterable {
 
         };
     }
+
+    public List<Singer> getSingers(){
+        return singers;
+    }
+
+    public void setSingers(List<Singer> singers){
+        this.singers.clear();
+        this.singers.addAll(singers);
+    }
 }

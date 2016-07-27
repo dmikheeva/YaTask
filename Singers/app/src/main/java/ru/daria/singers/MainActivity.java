@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     HeadsetPlugReceiver headsetPlugReceiver;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fm = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
             MainFragment fragment = new MainFragment();
             fragmentTransaction.add(R.id.fragmentContainer, fragment);
             fragmentTransaction.commit();
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     }
 
     private ListItemAdapter getListAdapter() {
-        MainFragment currFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
+        MainFragment currFragment = (MainFragment) getFm().findFragmentById(R.id.fragmentContainer);
         return currFragment.adapter;
     }
 
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     }
 
     private void onAboutProgramItemSelected() {
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getFm();
         AboutProgramDialog aboutProgramDialog = new AboutProgramDialog();
         aboutProgramDialog.show(fragmentManager, "О программе");
     }
@@ -127,10 +128,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
+        if (getFm().getBackStackEntryCount() == 0) {
             this.finish();
         } else {
-            getFragmentManager().popBackStack();
+            getFm().popBackStack();
             toolbar.setNavigationIcon(null);
             toolbar.setTitle(R.string.title_activity_main);
             showMenuVisible(toolbar.getMenu(), true);
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
         Bundle arg = new Bundle();
         arg.putSerializable("SINGER", singer);
         fragment.setArguments(arg);
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getFm();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, fragment);
         fragmentTransaction.addToBackStack(null);
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
 
     private void showMusicDialog() {
         MusicDialog musicDialog = new MusicDialog();
-        musicDialog.show(getFragmentManager(), null);
+        musicDialog.show(getFm(), null);
     }
 
     public class HeadsetPlugReceiver extends BroadcastReceiver {
@@ -196,5 +197,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnSi
     public Toolbar getToolbar() {
         return toolbar;
     }
+
+    public FragmentManager getFm() {
+        return fm;
+    }
+
 
 }
